@@ -15,7 +15,7 @@
   "author": "Bartlomiej Michonski",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/gbartek1190/goit-js-hw-11-BM/issues"
+    "url": "https://github.com/bartek1190/goit-js-hw-11-BM/issues"
   },
   "dependencies": {
     "modern-normalize": "^1.1.0"
