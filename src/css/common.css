@@ -1,6 +1,8 @@
 :root {
-  --timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  --animation-duration: 250ms;
+  --timing-function: ease-in-out;
+  --animation-duration: 0.3s;
+  --primary-color: #3498db;
+  --secondary-color: #e74c3c;
 }
 
 * {
@@ -14,9 +16,9 @@ body {
     Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fafafa;
-  color: #212121;
-  line-height: 1.5;
+  background-color: #f5f5f5;
+  color: #333;
+  line-height: 1.6;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,9 +30,9 @@ img {
 }
 
 .search-form {
-  background-color: aqua;
+  background-color: var(--primary-color);
   height: 80px;
-  width: 100vw;
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -56,42 +58,44 @@ img {
 .search-form button:hover,
 .search-form button:focus {
   cursor: pointer;
+  background-color: var(--secondary-color);
 }
 
 .load-more {
   height: 35px;
   font-size: 16px;
   padding: 0 20px;
-  background-color: aqua;
+  background-color: var(--primary-color);
   border: none;
   margin-top: 20px;
   margin-bottom: 20px;
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color var(--animation-duration) var(--timing-function);
 }
 
 .load-more:hover,
 .load-more:focus {
   cursor: pointer;
-  background-color: rgb(28, 212, 212);
+  background-color: var(--secondary-color);
 }
 
 .gallery {
   display: flex;
   flex-wrap: wrap;
   gap: 15px 10px;
-  width: 1190px;
+  max-width: 1200px;
   margin-top: 20px;
 }
 
 .photo-card {
   position: relative;
-  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
-    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
-  transition: transform var(--animation-duration) var(--timing-function);
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+  transition: transform var(--animation-duration) var(--timing-function),
+    box-shadow var(--animation-duration) var(--timing-function);
 }
 
 .photo-card:hover {
-  transform: scale(1.03);
+  transform: scale(1.05);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 .photo-card__image {
@@ -103,8 +107,8 @@ img {
 .photo-card__link {
   display: block;
   text-decoration: none;
-  height: 180px;
-  width: 290px;
+  height: 200px;
+  width: 320px;
 }
 
 .photo-card__link:hover {
@@ -113,8 +117,8 @@ img {
 
 .info {
   display: flex;
-  justify-content: space-around;
-  font-size: 12px;
+  justify-content: space-between;
+  font-size: 14px;
   margin-top: 12px;
   margin-bottom: 12px;
 }
