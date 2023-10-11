@@ -1,8 +1,6 @@
 import axios from 'axios';
-import Notiflix from 'notiflix';
-import 'notiflix/dist/notiflix-3.2.6.min.css';
 
-const apiKey = '39706088-eed53521a6a27e1b88370a6d4';
+const apiKey = '39933687-b994f8a104bb2829fdb605324';
 
 export const fetchPhotos = async (searchQuery, page, perPage) => {
   try {

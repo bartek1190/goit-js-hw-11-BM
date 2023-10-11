@@ -4,59 +4,69 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { fetchPhotos } from './api';
 
-const apiKey = '39706088-eed53521a6a27e1b88370a6d4';
-
 const searchForm = document.getElementById('search-form');
-console.log(searchForm);
 const gallery = document.querySelector('.gallery');
-console.log(gallery);
-const loadMoreBtn = document.querySelector('.load-more');
-console.log(loadMoreBtn);
+const btnLoadMore = document.querySelector('.load-more');
 
 const perPage = 40;
-let page = 1;
-let searchQuery = '';
+let currentPage = 1;
+let searchQuestion = '';
 
-loadMoreBtn.style.display = 'none';
+btnLoadMore.style.display = 'none';
 
-const handleSearch = async () => {
-  const searchValue = searchForm.searchQuery.value.trim();
+const createImagesGallery = images => {
+  const markup = images
+    .map(
+      image => `<div class="photo-card">
+  <a class="photo-card__link" href="${image.largeImageURL}"><img class="photo-card__image" src="${image.webformatURL}" alt="${image.tags}" loading="lazy" /></a>
+  <div class="info">
+    <p class="info-item">
+      <b>Likes:</b> ${image.likes}
+    </p>
+    <p class="info-item">
+      <b>Views:</b> ${image.views}
+    </p>
+    <p class="info-item">
+      <b>Comments:</b> ${image.comments}
+    </p>
+    <p class="info-item">
+      <b>Downloads:</b> ${image.downloads}
+    </p>
+  </div>
+</div>`
+    )
+    .join('');
+  gallery.innerHTML += markup;
+  console.log('Show gallery:', gallery);
+  const lightbox = new SimpleLightbox('.gallery a');
+  lightbox.refresh();
+};
 
-  if (searchValue === '') {
-    Notiflix.Notify.failure('Error. You must enter something.');
-    searchQuery = '';
-    return;
-  }
-
-  searchQuery = searchValue;
-  gallery.innerHTML = '';
-  page = 1;
-
+const fetchImages = async () => {
   try {
-    const data = await fetchPhotos(searchQuery, page, perPage);
+    const response = await fetchPhotos(searchQuestion, currentPage, perPage);
 
-    if (data.hits.length === 0) {
+    if (response.hits.length === 0) {
       Notiflix.Notify.warning(
         'Sorry, there are no images matching your search query. Please try again.'
       );
-
-      loadMoreBtn.style.display = 'none';
+      btnLoadMore.style.display = 'none';
     } else {
-      galleryElements(data.hits);
-      const totalHits = data.totalHits;
+      createImagesGallery(response.hits);
+      const totalHits = response.totalHits;
       Notiflix.Notify.success(`Success! We found ${totalHits} images.`);
 
-      if (page === 1) {
+      if (currentPage === 1) {
         Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
       }
 
-      if (data.totalHits <= page * perPage) {
-        loadMoreBtn.style.display = 'none';
+      if (response.totalHits <= currentPage * perPage) {
+        btnLoadMore.style.display = 'none';
         Notiflix.Notify.warning(
           "We're sorry, but you've reached the end of search results."
         );
       } else {
-        loadMoreBtn.style.display = 'block';
+        btnLoadMore.style.display = 'block';
       }
     }
   } catch (error) {
@@ -64,39 +74,26 @@ const handleSearch = async () => {
   }
 };
 
-const galleryElements = images => {
-  const galleryHTML = images
-    .map(image => {
-      return `
-        <div class="photo-card">
-          <a class="photo-card__link" href="${image.largeImageURL}">
-            <img class="photo-card__image" src="${image.webformatURL}" alt="${image.tags}" loading="lazy" />
-          </a>
-          <div class="info">
-            <p class="info-item"><b>Likes:</b> ${image.likes}</p>
-            <p class="info-item"><b>Views:</b> ${image.views}</p>
-            <p class="info-item"><b>Comments:</b> ${image.comments}</p>
-            <p class="info-item"><b>Downloads:</b> ${image.downloads}</p>
-          </div>
-        </div>
-      `;
-    })
-    .join('');
+searchForm.addEventListener('submit', event => {
+  event.preventDefault();
+  const searchValue = event.currentTarget.elements.searchQuery.value;
 
-  gallery.insertAdjacentHTML('beforeend', galleryHTML);
-  const lightbox = new SimpleLightbox('.photo-card a');
-  lightbox.refresh();
-};
+  if (searchValue.trim() === '') {
+    Notiflix.Notify.failure('Error. You must enter something.');
+    searchQuestion = '';
+    return;
+  }
 
-searchForm.addEventListener('submit', async e => {
-  e.preventDefault();
-  handleSearch();
+  searchQuestion = searchValue;
+  gallery.innerHTML = '';
+  currentPage = 1;
+  fetchImages();
 });
 
-loadMoreBtn.addEventListener('click', () => {
+btnLoadMore.addEventListener('click', () => {
   console.log('Load More clicked!');
-  page++;
-  handleSearch();
+  currentPage++;
+  fetchImages();
 
   const galleryElement = document.querySelector('.gallery');
 
